@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <meta name="viewport"
+    content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+</head>
+<style>
+  .tit_top {
+    display: flex;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    justify-content: center;
+
+  }
+
+  .tit_top>div:nth-child(2) {
+    width: 80%;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .back {
+    position: relative;
+    top: .2rem;
+  }
+
+  .icon_tx {
+    width: 84px;
+    height: 84px;
+    margin: auto;
+    padding: 2rem 0px;
+  }
+
+  .icon_tx>img {
+    width: 100%;
+  }
+
+  .in {
+    /* border: 1px solid black; */
+    text-align: center;
+    width: 80%;
+    margin: auto;
+    margin-top: 10px;
+    border-bottom: 1px solid #ddd;
+
+  }
+
+  .in>input {
+    width: 100%;
+    height: 40px;
+    border: none;
+
+    padding-left: 10px;
+  }
+
+  .yq {
+    text-align: center;
+  }
+
+  .in7 {
+    display: flex;
+
+
+  }
+
+  .yzm {
+    /*! autoprefixer: off */
+    background: -webkit-linear-gradient(left top, #3FBBFF, #4395FF);
+    /* autoprefixer: on */
+    background: -moz-linear-gradient(left top, #3FBBFF, #4395FF);
+    background: -o-linear-gradient(left top, #3FBBFF, #4395FF);
+    background: linear-gradient(left top, #3FBBFF, #4395FF);
+    width: 120px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 4px;
+    color: #fff;
+    margin-top: 7px;
+  }
+
+  .next {
+    background: #BFC8CE;
+    height: 45px;
+    width: 90%;
+    margin: auto;
+    border-radius: 4px;
+    color: #fff;
+    line-height: 45px;
+    text-align: center;
+    margin-top: 4rem;
+  }
+
+  .tips {
+    font-size: 10px;
+    color: #666666;
+    width: 80%;
+    margin: auto;
+    padding-top: .5rem;
+  }
+  #img_input{
+    opacity: 0;
+    background-image: url(../img/tx@2x.png);
+    background-color: #000;
+    width: 84px;
+    height: 84px;
+    position: absolute;
+    top: 5rem;
+    left: 8.5rem;
+  }
+</style>
+
+<body>
+  <div class="wrapp">
+    <div class="main">
+      <div class="tit_top">
+        <div>注册</div>
+      </div>
+
+      <a href="#" id="fileSelect">
+        <div class="icon_tx preview_box">
+          <img src="../img/tx@2x.png" alt="">
+        </div>
+      </a>
+      <input id="img_input" type="file" accept="image/*"/>
+      <label for="img_input"></label>
+      <div class="infor">
+        <div class="in in1"><input type="text" placeholder="输入你的用户名" id="nickname" /></div>
+        <div class="in in2"><input type="text" placeholder="输入你的手机号" id="mobile" /></div>
+        <div class="in in3">
+          <!-- <input type="text" placeholder="请选择你的国家"/> -->
+          <select id='area' style="width: 100%;height: 40px;border: none;color: #7b6f6f;padding-left: 10px;">
+            <option value="">请选择你的国家</option>
+            <option value="86">中国+86</option>
+            <option value="852">香港+852</option>
+            <option value="852">台湾+886</option>
+            <option value="1">美国+1</option>
+            <option value="91">印度+91</option>
+            <option value="62">印度尼西亚+62</option>
+            <option value="65">新加坡+65</option>
+            <option value="84">越南+84</option>
+            <option value="66">泰国+66</option>
+            <option value="855">柬埔寨+855</option>
+            <option value="44">英国+44</option>
+            <option value="81">日本+81</option>
+            <option value="82">韩国+82</option>
+            <option value="63">菲律宾+63</option>
+            <option value="60">马来西亚+60</option>
+          </select>
+        </div>
+        <div class="in in4"><input type="password" placeholder="输入你的密码" id="password" /></div>
+        <div class="in in5"><input type="password" placeholder="重置你的密码" id="confirm_pwd" /></div>
+        <div class="tips">(字母，数字 + 特别符号（可以不加）最少6个字符)</div>
+        <div class="in6"><input type="text" placeholder="邀请码(选填)" disabled='true' class="yq" id="invite_code"/></div>
+        <div class="in in7">
+          <input type="text" placeholder="输入你的验证码" id="code" />
+          <div class="yzm" id="gotCode">获取</div>
+        </div>
+      </div>
+      <div class="next" id="next">下一步</div>
+    </div>
+  </div>
+  <script>
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("?");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable)
+               {return pair[1];}
+       }
+       return(false);
+}
+ 
+    let invite_code = getQueryVariable("invite_code")
+    let cover_id = ''
+    let coding = ''
+    // 上传图片的接口
+    function select() {
+      var ie = navigator.appName == "Microsoft Internet Explorer" ? true : false;
+      if (ie) {
+        document.getElementById("file").click();
+      } else {
+        var a = document.createEvent("MouseEvents");
+        a.initEvent("click", true, true);
+        document.getElementById("file").dispatchEvent(a);
+      }
+    }
+    function submit() {
+      //文件上传
+    }
+    $("#img_input").on("change", function (e) {
+      var file = e.target.files[0]; //获取图片资源
+      // 只选择图片文件
+      if (!file.type.match('image.*')) {
+        return false;
+      }
+      var reader = new FileReader();
+      reader.readAsDataURL(file); // 读取文件
+      // 渲染文件
+      reader.onload = function (arg) {
+        var img = '<img class="preview" src="' + arg.target.result + '" alt="preview"/>';
+        $(".preview_box").empty().append(img);
+      }
+
+      var form_data = new FormData();
+      var file = $("#img_input").prop("files")[0];
+      var access_token = '5b7f60aca7e7f6f8c680b1b219ad3ec6'
+
+      // 把上传的数据放入form_data
+      form_data.append("file", file);
+      form_data.append("access_token", access_token);
+
+      $.ajax({
+        type: "POST", // 上传文件要用POST
+        url: "http://gap.topscope.com.cn/api.php/common/pictureUpload1",
+        dataType: "json",
+        crossDomain: true, // 如果用到跨域，需要后台开启CORS
+        processData: false,  // 注意：不要 process data
+        contentType: false,  // 注意：不设置 contentType
+        data: form_data,
+        success: function(data){
+          cover_id =  data['data'].id
+        },
+        error: function(){
+          alert("fail")
+        }
+      });
+    });
+
+    // 注册接口
+    $('#next').click(function () {
+      // 注册的接口
+      var options = $("#gotCode")
+      var options = $("#area option:selected")
+      var area = options.val();
+      var token = coding
+      var access_token = '5b7f60aca7e7f6f8c680b1b219ad3ec6'
+      var mobile = $("#mobile").val()
+      var nickname = $("#nickname").val()
+      var code = $("#code").val()
+      var password = $("#password").val()
+      var confirm_pwd = $("#confirm_pwd").val()
+
+
+      var aj = $.ajax({
+        url: 'http://gap.topscope.com.cn/api.php/common/register',
+        data: {
+          access_token: access_token,
+          mobile: mobile,
+          nickname: nickname,
+          area: area,
+          cover_id: cover_id,
+          code: code,
+          token: token,
+          invite_code: invite_code,
+          password: password,
+          confirm_pwd: confirm_pwd
+        },
+        type: 'post',
+        cache: false,
+        dataType: 'json',
+        success: function (data) {
+          alert(data['msg']);
+        },
+        error: function () {
+          alert(data['msg']);
+        }
+      });
+
+    })
+
+
+    //糖果的接口
+    var aj = $.ajax({
+      url: 'http://gap.topscope.com.cn/api.php/common/sweep_code',
+      data: {
+        access_token: '5b7f60aca7e7f6f8c680b1b219ad3ec6',
+        invite_code: invite_code,
+      },
+      type: 'post',
+      cache: false,
+      dataType: 'json',
+      success: function (data) {
+        // alert("修改成功！");
+      },
+      error: function () {
+        alert("糖果的接口异常！");
+      }
+    });
+
+    //验证码接口
+    $('#gotCode').click(function () {
+      var time = null;
+      clearInterval(time);
+      this.disabled = true;
+      var that = this;
+      var count = 2;
+      time = setInterval(message, 1000);
+      function message() {
+        count--;
+        if (count >= 0) {
+          that.innerHTML = "剩下" + count + "秒";
+          $("#gotCode").css('background', 'rgba(153,154,165,1)');
+        }
+        else {
+          clearInterval(time);
+          that.disabled = false;
+          that.innerHTML = "重新发送验证码";
+          $("#gotCode").css('background', '#4395FF');
+        }
+      }
+
+      var options = $("#code")
+      var options = $("#area option:selected")
+      var area = options.val();
+      var mobile = $('#mobile').val()
+      var aj = $.ajax({
+        url: 'http://gap.topscope.com.cn/api.php/common/send_sms',
+        data: {
+          access_token: '5b7f60aca7e7f6f8c680b1b219ad3ec6',
+          mobile: mobile,
+          type: 1,
+          area: area,
+        },
+        type: 'post',
+        cache: false,
+        dataType: 'json',
+        success: function (data) {
+          alert(data['msg']);
+          coding = data['dat']
+
+        },
+        error: function () {
+          alert(data['msg']);
+        }
+      });
+    })
+  </script>
+</body>
+
+</html>
